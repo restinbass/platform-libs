@@ -50,6 +50,11 @@ func Configure(signals ...os.Signal) {
 	go globalCloser.handleSignals(signals...)
 }
 
+// SetLogger -
+func SetLogger(l Logger) {
+	globalCloser.SetLogger(l)
+}
+
 // New -
 func New(logger Logger, signals ...os.Signal) *Closer {
 	c := &Closer{
@@ -83,6 +88,11 @@ func (c *Closer) handleSignals(signals ...os.Signal) {
 		}
 	case <-c.done:
 	}
+}
+
+// SetLogger -
+func (c *Closer) SetLogger(l Logger) {
+	c.logger = l
 }
 
 // AddNamed -

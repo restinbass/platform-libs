@@ -31,9 +31,7 @@ type (
 	}
 )
 
-var (
-	globalCloser = New(&noopLogger{})
-)
+var globalCloser = New(&noopLogger{})
 
 // AddNamed -
 func AddNamed(name string, f func(context.Context) error) {

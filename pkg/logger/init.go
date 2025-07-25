@@ -100,3 +100,10 @@ func buildProductionEncoderConfig() zapcore.EncoderConfig {
 		EncodeName:     zapcore.FullNameEncoder,
 	}
 }
+
+// SetNopLogger -
+func SetNopLogger() {
+	globalLogger = &logger{
+		zapLogger: zap.NewNop(),
+	}
+}

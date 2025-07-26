@@ -37,8 +37,9 @@ const (
 )
 
 var (
-	initOnce     sync.Once
-	globalLogger *logger
+	initOnce        sync.Once
+	initDefaultOnce sync.Once
+	globalLogger    *logger
 )
 
 // Init -
@@ -53,6 +54,28 @@ func Init(cfg config) {
 		} else {
 			encoder = zapcore.NewConsoleEncoder(encoderCfg)
 		}
+
+		core := zapcore.NewCore(
+			encoder,
+			zapcore.AddSync(os.Stdout),
+			dynamicLevel,
+		)
+
+		zapLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(2))
+		globalLogger = &logger{
+			zapLogger: zapLogger,
+		}
+	})
+}
+
+// InitDefault -
+func InitDefault() {
+	initDefaultOnce.Do(func() {
+		dynamicLevel := zap.NewAtomicLevelAt(parseLevel(string(LogLevelDebug)))
+		encoderCfg := buildProductionEncoderConfig()
+
+		var encoder zapcore.Encoder
+		encoder = zapcore.NewJSONEncoder(encoderCfg)
 
 		core := zapcore.NewCore(
 			encoder,
